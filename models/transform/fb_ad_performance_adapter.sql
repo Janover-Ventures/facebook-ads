@@ -1,16 +1,16 @@
-with fb_keyword_performance as (
-
-    select * from {{ref('fb_ad_insights_xf')}}
-
+WITH fb_keyword_performance AS (
+    SELECT
+        *
+    FROM
+        {{ ref('fb_ad_insights_xf') }}
 ),
-
-fb_keyword_performance_agg as (
-
-    select 
-    
-        date_day as campaign_date,
-        adset_id as ad_group_id,
-        adset_name as ad_group_name,
+fb_keyword_performance_agg AS (
+    SELECT
+        CAST(
+            date_day AS DATE
+        ) AS campaign_date,
+        adset_id AS ad_group_id,
+        adset_name AS ad_group_name,
         campaign_id,
         url_host,
         url_path,
@@ -20,14 +20,14 @@ fb_keyword_performance_agg as (
         utm_content,
         utm_term,
         campaign_name,
-        'facebook ads' as platform,
-        sum(clicks) as clicks,
-        sum(impressions) as impressions,
-        sum(spend) as spend
-        
-    from fb_keyword_performance
-    {{ dbt_utils.group_by(13) }}
-    
+        'facebook ads' AS platform,
+        SUM(clicks) AS clicks,
+        SUM(impressions) AS impressions,
+        SUM(spend) AS spend
+    FROM
+        fb_keyword_performance {{ dbt_utils.group_by(13) }}
 )
-
-select * from fb_keyword_performance_agg
+SELECT
+    *
+FROM
+    fb_keyword_performance_agg
